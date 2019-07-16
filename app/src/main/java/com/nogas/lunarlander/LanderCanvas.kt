@@ -3,6 +3,7 @@ package com.nogas.lunarlander
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import stanford.androidlib.graphics.*
 
@@ -64,7 +65,26 @@ class LanderCanvas(context:Context, attrs:AttributeSet)
         rocket.accelerationY = GRAVITY_ACCELERATION
         add(rocket)
 
+        // funcion, para controlar el TOUCH:
 
+        setOnTouchListener { _, event ->
+            handleTouchEvent(event)
+            true
+        }
+
+
+
+    }
+
+    private fun handleTouchEvent(event:MotionEvent){
+
+        if (event.action == MotionEvent.ACTION_DOWN){
+            // el usuario presiona hacia abajo:
+            rocket.accelerationY = THRUST_ACCELERATION
+        }else if (event.action == MotionEvent.ACTION_UP){
+            //el usuario deja de apretar:
+            rocket.accelerationY = GRAVITY_ACCELERATION
+        }
 
     }
 
