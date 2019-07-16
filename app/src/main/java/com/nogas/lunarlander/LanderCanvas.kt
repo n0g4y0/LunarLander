@@ -29,6 +29,7 @@ class LanderCanvas(context:Context, attrs:AttributeSet)
     // private fields:
 
     private lateinit var rocket: GSprite
+    private lateinit var moonSurface:GSprite
 
     /*
     * called when the GCanvas is being created
@@ -36,25 +37,48 @@ class LanderCanvas(context:Context, attrs:AttributeSet)
     * */
 
     override fun init() {
+        // para DEBUGEAR, y ver cual es el funcionamiento de las librerias:
+        GSprite.setDebug(true)
         backgroundColor = GColor.BLACK
 
-        //TODO
-        //val rect = GRect(0f,0f,100f,100f)
-        //rect.fillColor = GColor.RED
+        // representa la imagen de la luna: (es una LIBRARY de android)
+        var moonSurfaceImage = BitmapFactory.decodeResource(resources,R.drawable.moonsurface)
+        // hacer que la imagen, sea mas pequeña:
+        moonSurfaceImage = moonSurfaceImage.scaleToWidth(this.width.toFloat())
+
+        moonSurface = GSprite(moonSurfaceImage)
+        //la siguiente linea, situa la imagen, de la superficio lunar, al pie del ACTIVITY
+        moonSurface.bottomY = this.height.toFloat()
+        // le da un margen de colision, sobre la superficie lunar:
+        moonSurface.collisionMarginTop = moonSurface.height / 4f
+
+        add(moonSurface)
 
         // representa la imagen del cohete: (es una LIBRARY de android)
         var rocketImage = BitmapFactory.decodeResource(resources,R.drawable.rocketship1)
         // hacer que la imagen, sea mas pequeña:
-        rocketImage = rocketImage.scaleToWidth(this.width / 10f)
+        rocketImage = rocketImage.scaleToWidth(this.width / 6f)
 
         rocket = GSprite(rocketImage)
         //rocket.velocityY = 10f
         rocket.accelerationY = GRAVITY_ACCELERATION
         add(rocket)
+
+
+
     }
 
     private fun tick(){
         rocket.update()
+        doCollisions()
+    }
+
+    private fun doCollisions(){
+        // usando la libreria, si se colisiona con la superficie lunar , el cohete se para.
+        if (rocket.collidesWith(moonSurface)){
+            rocket.velocityY = 0f
+            rocket.accelerationY = 0f
+        }
     }
 
     /*
