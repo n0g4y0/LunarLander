@@ -1,6 +1,7 @@
 package com.nogas.lunarlander
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -29,6 +30,10 @@ class LanderCanvas(context:Context, attrs:AttributeSet)
 
     // private fields:
 
+    private lateinit var rocketImage:Bitmap
+    // esta variable, simula el fueguito
+    private lateinit var rocketImageThrust:Bitmap
+
     private lateinit var rocket: GSprite
     private lateinit var moonSurface:GSprite
 
@@ -56,9 +61,14 @@ class LanderCanvas(context:Context, attrs:AttributeSet)
         add(moonSurface)
 
         // representa la imagen del cohete: (es una LIBRARY de android)
-        var rocketImage = BitmapFactory.decodeResource(resources,R.drawable.rocketship1)
+        rocketImage = BitmapFactory.decodeResource(resources,R.drawable.rocketship1)
         // hacer que la imagen, sea mas pequeña:
         rocketImage = rocketImage.scaleToWidth(this.width / 6f)
+
+        // representa la imagen del cohete: (es una LIBRARY de android)
+        rocketImageThrust = BitmapFactory.decodeResource(resources,R.drawable.rocketshipthrust4)
+        // hacer que la imagen, sea mas pequeña:
+        rocketImageThrust = rocketImageThrust.scaleToWidth(this.width / 6f)
 
         rocket = GSprite(rocketImage)
         //rocket.velocityY = 10f
@@ -81,9 +91,12 @@ class LanderCanvas(context:Context, attrs:AttributeSet)
         if (event.action == MotionEvent.ACTION_DOWN){
             // el usuario presiona hacia abajo:
             rocket.accelerationY = THRUST_ACCELERATION
+            //imagen que simula el fuegito que sale del cohete
+            rocket.bitmap = rocketImageThrust
         }else if (event.action == MotionEvent.ACTION_UP){
             //el usuario deja de apretar:
             rocket.accelerationY = GRAVITY_ACCELERATION
+            rocket.bitmap = rocketImage
         }
 
     }
