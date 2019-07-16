@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Lunar Lander</string>
+
+    <string name="play">Play Game</string>
+    <string name="stop">Stop Game</string>
+    <string name="youwin">You win! U R GR8</string>
+    <string name="youlose">You SUCK! Go away.</string>
+    <string name="score">Score: %1$d earned</string>
+</resources>
