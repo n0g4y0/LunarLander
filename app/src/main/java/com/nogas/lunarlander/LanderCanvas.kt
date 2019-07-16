@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import stanford.androidlib.graphics.*
+import java.util.ArrayList
 
 class LanderCanvas(context:Context, attrs:AttributeSet)
                 :GCanvas(context,attrs){
@@ -32,7 +33,7 @@ class LanderCanvas(context:Context, attrs:AttributeSet)
 
     private lateinit var rocketImage:Bitmap
     // esta variable, simula el fueguito
-    private lateinit var rocketImageThrust:Bitmap
+    private var rocketImageThrust = ArrayList<Bitmap>()
 
     private lateinit var rocket: GSprite
     private lateinit var moonSurface:GSprite
@@ -44,7 +45,7 @@ class LanderCanvas(context:Context, attrs:AttributeSet)
 
     override fun init() {
         // para DEBUGEAR, y ver cual es el funcionamiento de las librerias:
-        GSprite.setDebug(true)
+        //GSprite.setDebug(true)
         backgroundColor = GColor.BLACK
 
         // representa la imagen de la luna: (es una LIBRARY de android)
@@ -66,9 +67,30 @@ class LanderCanvas(context:Context, attrs:AttributeSet)
         rocketImage = rocketImage.scaleToWidth(this.width / 6f)
 
         // representa la imagen del cohete: (es una LIBRARY de android)
-        rocketImageThrust = BitmapFactory.decodeResource(resources,R.drawable.rocketshipthrust4)
+        var rocketImageThrust1 = BitmapFactory.decodeResource(resources,R.drawable.rocketshipthrust1)
         // hacer que la imagen, sea mas pequeña:
-        rocketImageThrust = rocketImageThrust.scaleToWidth(this.width / 6f)
+        rocketImageThrust1 = rocketImageThrust1.scaleToWidth(this.width / 6f)
+
+        // representa la imagen del cohete: (es una LIBRARY de android)
+        var rocketImageThrust2 = BitmapFactory.decodeResource(resources,R.drawable.rocketshipthrust2)
+        // hacer que la imagen, sea mas pequeña:
+        rocketImageThrust2 = rocketImageThrust2.scaleToWidth(this.width / 6f)
+
+        // representa la imagen del cohete: (es una LIBRARY de android)
+        var rocketImageThrust3 = BitmapFactory.decodeResource(resources,R.drawable.rocketshipthrust3)
+        // hacer que la imagen, sea mas pequeña:
+        rocketImageThrust3 = rocketImageThrust3.scaleToWidth(this.width / 6f)
+
+        // representa la imagen del cohete: (es una LIBRARY de android)
+        var rocketImageThrust4 = BitmapFactory.decodeResource(resources,R.drawable.rocketshipthrust4)
+        // hacer que la imagen, sea mas pequeña:
+        rocketImageThrust4 = rocketImageThrust4.scaleToWidth(this.width / 6f)
+
+        rocketImageThrust.add(rocketImageThrust1)
+        rocketImageThrust.add(rocketImageThrust2)
+        rocketImageThrust.add(rocketImageThrust3)
+        rocketImageThrust.add(rocketImageThrust4)
+
 
         rocket = GSprite(rocketImage)
         //rocket.velocityY = 10f
@@ -92,7 +114,8 @@ class LanderCanvas(context:Context, attrs:AttributeSet)
             // el usuario presiona hacia abajo:
             rocket.accelerationY = THRUST_ACCELERATION
             //imagen que simula el fuegito que sale del cohete
-            rocket.bitmap = rocketImageThrust
+            rocket.bitmaps = rocketImageThrust
+            rocket.framesPerBitmap = FRAMES_PER_SECOND / 3
         }else if (event.action == MotionEvent.ACTION_UP){
             //el usuario deja de apretar:
             rocket.accelerationY = GRAVITY_ACCELERATION
@@ -109,6 +132,21 @@ class LanderCanvas(context:Context, attrs:AttributeSet)
     private fun doCollisions(){
         // usando la libreria, si se colisiona con la superficie lunar , el cohete se para.
         if (rocket.collidesWith(moonSurface)){
+
+            if (rocket.velocityY <= MAX_SAFE_LANDING_VELOCITY){
+                //you win
+//                var message = GLabel("Tu ganas")
+//               message.fontSize = 100f
+//                message.color = GColor.RED
+//                add(message)
+            }else{
+                // you lose
+                var message = GLabel("Perdiste :(")
+                message.fontSize = 100f
+                message.color = GColor.ORANGE
+                add(message)
+            }
+
             rocket.velocityY = 0f
             rocket.accelerationY = 0f
         }
